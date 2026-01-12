@@ -1,75 +1,62 @@
-# Escape Room Props Repository
+# Red Rider Win Button
 
-Arduino/ESP sketches and projects for escape room prop development.
-
-## Purpose
-
-This repository contains all code for escape room props—interactive puzzle elements that players interact with during escape room experiences. Templates are provided as starting points for new props.
+ESP32-S3 win button prop for the Christmas Red Rider escape room. Simple button trigger that plays a victory sound when pressed.
 
 ## Hardware
 
-**Microcontrollers:**
-- ESP32
-- ESP8266
-- Arduino boards
+- **Board**: ESP32-S3-DevKitC-1 (N8R2: 8MB Flash, 2MB PSRAM)
+- **Audio**: DY-HV8F MP3 player module
+- **Input**: Momentary button
 
-**Common Sensors & Components:**
-- RFID readers (RC522, PN532)
-- Keypads and buttons
-- Reed switches and magnetic sensors
-- IR sensors and break beams
-- Load cells and pressure sensors
-- Rotary encoders
-- LED strips (WS2812B, etc.)
-- Servos and solenoids for locks
-- Audio modules (DFPlayer, etc.)
+## Features
 
-## Communication Protocols
+- **Button Trigger**: Debounced button input with internal pull-up
+- **Victory Audio**: Plays win sound on button press
+- **Simple Design**: Minimal code for reliable operation
 
-**MQTT** - Primary messaging protocol for prop-to-controller communication
-- Publish puzzle state changes
-- Subscribe to game control commands (reset, solve, hints)
-- Integration with Node-RED dashboards
-
-**ESP-NOW** - Low-latency peer-to-peer communication
-- Direct prop-to-prop communication without WiFi infrastructure
-- Useful for chained puzzles or synchronized effects
-
-**WiFi** - Network connectivity for MQTT and OTA updates
-
-**Node-RED** - Central game controller and monitoring
-- Dashboard for game masters
-- Puzzle flow logic
-- Timer and hint management
-
-## Repository Structure
-
-```
-├── Templates/
-│   └── ESP32/          # ESP32 PlatformIO template (you are here)
-├── [prop sketches...]  # Individual prop projects
-```
-
-## Typical Prop Architecture
-
-```
-┌─────────────┐     MQTT      ┌───────────┐
-│   ESP32     │◄─────────────►│  Node-RED │
-│   Prop      │               │ Controller│
-└─────────────┘               └───────────┘
-      │                             │
-      │ ESP-NOW                     │ Dashboard
-      ▼                             ▼
-┌─────────────┐               ┌───────────┐
-│ Other Props │               │Game Master│
-└─────────────┘               └───────────┘
-```
-
-## Build Commands (PlatformIO)
+## Quick Start
 
 ```bash
-pio run                  # Build
-pio run --target upload  # Upload to board
-pio run --target clean   # Clean build
-pio device monitor       # Serial monitor (115200 baud)
+pio run                    # Build
+pio run --target upload    # Upload via USB
+pio device monitor         # Serial output (115200 baud)
 ```
+
+## Wiring
+
+### Button
+| Connection | Pin |
+|------------|-----|
+| Button | GPIO32 |
+| Ground | GND |
+
+### DY-HV8F Audio
+| DY-HV8F | ESP32-S3 |
+|---------|----------|
+| VIN | 5V |
+| GND | GND |
+| IO0 (TX) | GPIO16 |
+| IO1 (RX) | GPIO17 |
+| SPK+/- | 8ohm speaker |
+
+### DY-HV8F Mode Selection
+| Pin | Connection |
+|-----|------------|
+| CON1 | GND |
+| CON2 | GND |
+| CON3 | 3.3V |
+
+## SD Card
+
+Place victory sound as `00001.mp3` on the SD card.
+
+## Configuration
+
+Edit `src/config.h`:
+- `BUTTON_PIN` - GPIO for button input
+- `DYPLAYER_VOLUME` - Audio volume (0-30)
+- `WIN_TRACK` - Track number to play
+
+## Part of Otherworld Escape Rooms
+
+This prop is part of the [OER](https://github.com/TenMoreMinutesProductions) escape room system.
